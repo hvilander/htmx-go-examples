@@ -3,12 +3,12 @@ package main
 import (
   "html/template"
   "io"
-  //"database/sql"
-  //"fmt"
-  //"os"
+  "database/sql"
+  "os"
+  "log"
 
-  //"github.com/joho/godotenv"
-  //"github.com/lib/pq"
+  "github.com/joho/godotenv"
+  _ "github.com/lib/pq"
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
 )
@@ -60,9 +60,18 @@ func newData() Data {
 
 
 func main() {
-  /*
-  // Setup connection to postgresSQL db
+  // Process env file
+  log.Print("Processing env vars...")
+  err := godotenv.Load()
+
+  if err != nil {
+    log.Fatalf("error loading env file: %", err)
+  }
+
   dbConnectionString := os.Getenv("DB_CONN_STR")
+
+  // Setup connection to postgresSQL db
+  log.Print("setting up db connection")
   db, err := sql.Open("postgres", dbConnectionString)
 
   if err != nil {
@@ -77,14 +86,12 @@ func main() {
   }
 
   // Print db version
-  fmt.Printf("version=%s\n", version)
-  */
-
-
+  log.Printf("db connected with version=%s\n", version)
 
   // Start the server
   e := echo.New()
   e.Use(middleware.Logger())
+
 
   data := newData()
   e.Renderer = newTemplate()
@@ -93,6 +100,7 @@ func main() {
   e.GET("/", func(c echo.Context) error {
     return c.Render(200, "index", data)
   })
+
 
   e.POST("/contacts", func(c echo.Context) error {
     name := c.FormValue("name")
