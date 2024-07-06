@@ -91,7 +91,7 @@ func main() {
 
   // handlers TODO move these to their own files at some point
   e.GET("/", func(c echo.Context) error {
-    return c.Render(200, "index", "test")
+    return c.Render(200, "index", data)
   })
 
   e.POST("/contacts", func(c echo.Context) error {

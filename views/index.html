@@ -9,30 +9,29 @@
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
   </head>
   <body>
-    {{template "nForm" . }}
+    {{ template "form" . }}
     <hr />
+    {{ template "display" . }}
   </body>
+</html>
 {{ end }}
 
-{{block "test" . }}
-  <div class="test">Test</test>
-{{ end}}
 
-{{ block "nForm" . }}
-  <div class="test">
-    <form>
-      <input="text" name="name" />
-
-  </div>
-{{ end }}
 
 {{ block "form" . }}
 <form hx-post="/contacts">
-  name: <input="text" name="name" /> 
-  email: <input="text" name="email" /> 
+  name: <input type="text" name="name" />
+  email: <input type="text" name="email" />
   <button type="submit">Create Contact</button>
 </form>
 {{ end }}
+
+
+{{ block "test" . }}
+<div>Test</div>
+
+{{ end }}
+
 
 
 {{ block "display" . }}
