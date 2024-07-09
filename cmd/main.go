@@ -3,17 +3,16 @@ package main
 import (
   "html/template"
   "io"
-  "database/sql"
   "os"
   "log"
-
+  "database/sql"
 
   "github.com/joho/godotenv"
   _ "github.com/lib/pq"
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
 
-  "mywebsite.tv/name/cmd/models"
+  "mywebsite.tv/name/cmd/database"
 )
 
 type Templates struct {
@@ -51,19 +50,10 @@ func newContact(name, email string) Contact {
   }
 }
 
-func newPerson(FName, lname string) Person {
-  return Person{
-    FName: FName,
-    lname: lname,
-  }
-}
-
 type Contacts = []Contact
-type People = []Person
 
 type Data struct {
   Contacts Contacts
-  People People
 }
 
 func newData() Data {
@@ -71,9 +61,6 @@ func newData() Data {
     Contacts: []Contact{
       newContact("John", "jd@gmail.com"),
       newContact("Clara", "cd@gmail.com"),
-    },
-    People: []Person{
-      newPerson("John", "Doe"),
     },
   }
 }
@@ -91,20 +78,18 @@ func main() {
   dbConnectionString := os.Getenv("DB_CONN_STR")
 
   // Setup connection to postgresSQL db
-  log.Print("setting up db connection")
-  db, err := sql.Open("postgres", dbConnectionString)
+  log.Print("setting up db connection...")
+  database.DBCon, err = sql.Open("postgres", dbConnectionString)
 
-  var doh string
-  doh = db
-
+ 
   if err != nil {
     panic(err)
   }
 
-  defer db.Close()
+  defer database.DBCon.Close()
   var version string
   
-  if err := db.QueryRow("select version()").Scan(&version); err != nil {
+  if err := database.DBCon.QueryRow("select version()").Scan(&version); err != nil {
     panic(err)
   }
 
@@ -127,21 +112,13 @@ func main() {
 
 
 
-    allPeople := people.getAll(db)
+    //allPeople := people.getAll(db)
     
 
 
-    people.Test()
+    //people.Test()
 
     return c.Render(200, "index", data)
-  })
-
-  e.GET("/people", func(c echo.Context) error {
-    rows, err := db.Query(`SELECT fname, lname FROM people`)
-    if err != nil {
-      panic(err)
-    }
-    return c.Render(200, "people", rows) 
   })
 
 
