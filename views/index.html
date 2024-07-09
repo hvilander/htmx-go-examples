@@ -12,6 +12,8 @@
     {{ template "form" . }}
     <hr />
     {{ template "display" . }}
+    <hr />
+    {{ template "people" . }}
   </body>
 </html>
 {{ end }}
@@ -44,3 +46,16 @@
   {{ end }}
   </div>
 {{ end }}
+
+{{ block "people" . }}
+  <div style="display: flex; flex-direction: column">
+    {{ range .People}}
+      <div>
+        Name: <span>{{ .FName}}</span>
+      </div>
+  {{ end }}
+  </div>
+{{ end }}
+
+
+
