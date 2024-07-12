@@ -11,9 +11,9 @@
   <body>
     {{ template "form" . }}
     <hr />
-    {{ template "display" . }}
+    {{ template "personForm" . }}
     <hr />
-    {{ template "people" . }}
+    {{ template "display" . }}
   </body>
 </html>
 {{ end }}
@@ -27,6 +27,15 @@
   <button type="submit">Create Contact</button>
 </form>
 {{ end }}
+
+{{ block "personForm" . }}
+<form hx-post="/person">
+  first name: <input type="text" name="name" />
+  last name: <input type="text" name="email" />
+  <button type="submit">Create Contact</button>
+</form>
+{{ end }}
+
 
 
 {{ block "test" . }}

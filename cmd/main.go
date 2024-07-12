@@ -6,6 +6,8 @@ import (
   "os"
   "log"
   "database/sql"
+  "time"
+  "fmt"
 
   "github.com/joho/godotenv"
   _ "github.com/lib/pq"
@@ -13,6 +15,7 @@ import (
   "github.com/labstack/echo/v4/middleware"
 
   "mywebsite.tv/name/cmd/database"
+  "mywebsite.tv/name/cmd/people"
 )
 
 type Templates struct {
@@ -38,10 +41,6 @@ type Contact struct {
   Email string
 }
 
-type Person struct {
-  FName string
-  LName string
-}
 
 func newContact(name, email string) Contact {
   return Contact{
@@ -117,8 +116,23 @@ func main() {
 
 
     //people.Test()
+    people.GetAll()
 
     return c.Render(200, "index", data)
+  })
+
+  e.POST("/person", func(c echo.Context) error {
+    fName := fmt.Sprintf("test %d",  time.Now().Unix());
+
+    p := people.Person{
+      FName: fName,
+      LName: "test",
+    }
+    
+    id, err := people.Create(p)
+    log.Print("created id", id)
+
+    return err;
   })
 
 
